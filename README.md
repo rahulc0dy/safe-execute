@@ -14,6 +14,9 @@
   <a href="https://github.com/rahulc0dy/safe-execute">
     <img src="https://img.shields.io/github/stars/rahulc0dy/safe-execute" alt="GitHub Stars">
   </a>
+  <a href="https://github.com/rahulc0dy/safe-execute">
+    <img src="https://img.shields.io/coderabbit/prs/github/rahulc0dy/safe-execute?utm_source=oss&utm_medium=github&utm_campaign=rahulc0dy%2Fsafe-execute&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews" alt="GitHub Stars">
+  </a>
 </div>
 
 # Safe Execute
