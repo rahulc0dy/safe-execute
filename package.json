@@ -1,0 +1,32 @@
+{
+  "name": "safe-execute",
+  "version": "0.0.1",
+  "description": "Safe Execute is a lightweight TypeScript utility designed to simplify error handling when executing functions—whether synchronous or asynchronous.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rahulc0dy/safe-execute.git"
+  },
+  "keywords": [
+    "typescript",
+    "utility",
+    "error-handling",
+    "async",
+    "synchronous"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rahulc0dy/safe-execute/issues"
+  },
+  "homepage": "https://github.com/rahulc0dy/safe-execute#readme",
+  "type": "module",
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  }
+}
