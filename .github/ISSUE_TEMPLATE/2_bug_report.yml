@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to report a bug in the Micro Auth project.
+        Thanks for taking the time to report a bug in the Safe Execute project.
   - type: markdown
     attributes:
       value: |
