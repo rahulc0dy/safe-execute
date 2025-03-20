@@ -6,11 +6,11 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "echo \"No tests specified\" && exit 0"
+    "test": "vitest"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rahulc0dy/safe-execute.git"
+    "url": "https://github.com/rahulc0dy/safe-execute.git"
   },
   "keywords": [
     "typescript",
@@ -27,6 +27,7 @@
   "homepage": "https://github.com/rahulc0dy/safe-execute#readme",
   "type": "module",
   "devDependencies": {
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.9"
   }
 }
