@@ -1,3 +1,21 @@
+<div align="center">
+  <a href="https://github.com/rahulc0dy/safe-execute/releases">
+    <img src="https://img.shields.io/badge/1.0.0-teal?label=version" alt="Version">
+  </a>
+  <a href="(https://github.com/rahulc0dy/safe-execute/actions/workflows/tests.yml">
+    <img src="https://github.com/rahulc0dy/safe-execute/actions/workflows/tests.yml/badge.svg" alt="Test Status">
+  </a>
+  <a href="https://github.com/rahulc0dy/safe-execute/actions/workflows/builds.yml">
+    <img src="https://github.com/rahulc0dy/safe-execute/actions/workflows/builds.yml/badge.svg" alt="Build Status">
+  </a>
+  <a href="https://github.com/rahulc0dy/safe-execute/issues">
+    <img src="https://img.shields.io/github/issues/rahulc0dy/safe-execute" alt="Issues">
+  </a>
+  <a href="https://github.com/rahulc0dy/safe-execute">
+    <img src="https://img.shields.io/github/stars/rahulc0dy/safe-execute" alt="GitHub Stars">
+  </a>
+</div>
+
 # Safe Execute
 
 Safe Execute is a lightweight TypeScript utility for safely executing functions—whether synchronous or asynchronous—with built-in error handling and state management.
