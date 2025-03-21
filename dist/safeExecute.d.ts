@@ -1,18 +1,16 @@
-export interface SafeExecutionResult<T> {
-    data: T | null;
-    isError: boolean;
-    isSuccess: boolean;
-    isLoading: boolean;
-}
-export interface SafeExecutionOptions<T> {
-    onSuccess?: (result: T) => void;
-    onError?: (error: unknown) => void;
-}
+export type Success<T> = {
+    data: T;
+    error: null;
+};
+export type Failure<E> = {
+    data: null;
+    error: E;
+};
+export type Result<T, E = Error> = Success<T> | Failure<E>;
 /**
- * Safely executes a function (sync or async) and returns an object with the execution result and state.
+ * Wraps a promise in a try/catch block and returns a discriminated union with either the data or an error.
  *
- * @param fn - The function to execute safely. It can return a value or a promise.
- * @param options - Optional callbacks for success and error handling.
- * @returns {Promise<SafeExecutionResult<T>>} A promise that resolves with the function's result and state flags.
+ * @param promise - A promise that resolves to type T.
+ * @returns A promise that resolves to a Result object.
  */
-export declare function safeExecute<T>(fn: () => Promise<T> | T, options?: SafeExecutionOptions<T>): Promise<SafeExecutionResult<T>>;
+export declare function safeExecute<T, E = Error>(promise: Promise<T>): Promise<Result<T, E>>;

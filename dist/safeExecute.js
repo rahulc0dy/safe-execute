@@ -1,27 +1,15 @@
-// safeExecute.ts
 /**
- * Safely executes a function (sync or async) and returns an object with the execution result and state.
+ * Wraps a promise in a try/catch block and returns a discriminated union with either the data or an error.
  *
- * @param fn - The function to execute safely. It can return a value or a promise.
- * @param options - Optional callbacks for success and error handling.
- * @returns {Promise<SafeExecutionResult<T>>} A promise that resolves with the function's result and state flags.
+ * @param promise - A promise that resolves to type T.
+ * @returns A promise that resolves to a Result object.
  */
-export async function safeExecute(fn, options) {
-    let result = null;
-    let isError = false;
-    let isSuccess = false;
-    let isLoading = true;
+export async function safeExecute(promise) {
     try {
-        result = await fn();
-        isSuccess = true;
-        options?.onSuccess?.(result);
+        const data = await promise;
+        return { data, error: null };
     }
     catch (error) {
-        isError = true;
-        options?.onError?.(error);
+        return { data: null, error: error };
     }
-    finally {
-        isLoading = false;
-    }
-    return { data: result, isError, isSuccess, isLoading };
 }
