@@ -1,84 +1,83 @@
-import { describe, it, expect } from "vitest";
-import { safeExecute } from "../src/safeExecute";
+import { describe, test, expect, vi } from "vitest";
+import { safeExecute, SafeExecutionOptions } from "../src/safeExecute";
 
 describe("safeExecute", () => {
-  it("executes a synchronous function and returns the value", async () => {
+  test("executes a synchronous function successfully", async () => {
     const syncFn = () => 42;
-    const result = await safeExecute(syncFn);
+    const onSuccess = vi.fn();
+    const result = await safeExecute(syncFn, { onSuccess });
+
     expect(result.data).toBe(42);
-    expect(result.isError).toBe(false);
     expect(result.isSuccess).toBe(true);
+    expect(result.isError).toBe(false);
     expect(result.isLoading).toBe(false);
+    expect(result.error).toBeNull();
+    expect(onSuccess).toHaveBeenCalledWith(42);
   });
 
-  it("executes an asynchronous function and returns the value", async () => {
-    const asyncFn = async () => {
-      return "Hello, async!";
-    };
-    const result = await safeExecute(asyncFn);
+  test("executes an asynchronous function successfully", async () => {
+    const asyncFn = async () => "Hello, async!";
+    const onSuccess = vi.fn();
+    const result = await safeExecute(asyncFn, { onSuccess });
+
     expect(result.data).toBe("Hello, async!");
-    expect(result.isError).toBe(false);
     expect(result.isSuccess).toBe(true);
+    expect(result.isError).toBe(false);
     expect(result.isLoading).toBe(false);
+    expect(result.error).toBeNull();
+    expect(onSuccess).toHaveBeenCalledWith("Hello, async!");
   });
 
-  it("catches an error for a synchronous function", async () => {
-    const errorFn = () => {
-      throw new Error("Test error");
+  test("handles errors in synchronous functions", async () => {
+    const error = new Error("Sync error");
+    const syncErrorFn = () => {
+      throw error;
     };
+    const onError = vi.fn();
+    const result = await safeExecute(syncErrorFn, { onError });
 
-    let onErrorCalled = false;
-    const options = {
-      onError: (error: unknown) => {
-        onErrorCalled = true;
-        expect(error).toEqual(new Error("Test error"));
-      },
-    };
-
-    const result = await safeExecute(errorFn, options);
-    expect(result.data).toBe(null);
-    expect(result.isError).toBe(true);
+    expect(result.data).toBeNull();
     expect(result.isSuccess).toBe(false);
+    expect(result.isError).toBe(true);
     expect(result.isLoading).toBe(false);
-    expect(onErrorCalled).toBe(true);
+    expect(result.error).toEqual(error);
+    expect(onError).toHaveBeenCalledWith(error);
   });
 
-  it("catches an error for an asynchronous function", async () => {
+  test("handles errors in asynchronous functions", async () => {
+    const error = new Error("Async error");
     const asyncErrorFn = async () => {
-      throw new Error("Async error");
+      throw error;
     };
+    const onError = vi.fn();
+    const result = await safeExecute(asyncErrorFn, { onError });
 
-    let onErrorCalled = false;
-    const options = {
-      onError: (error: unknown) => {
-        onErrorCalled = true;
-        expect(error).toEqual(new Error("Async error"));
-      },
-    };
-
-    const result = await safeExecute(asyncErrorFn, options);
-    expect(result.data).toBe(null);
-    expect(result.isError).toBe(true);
+    expect(result.data).toBeNull();
     expect(result.isSuccess).toBe(false);
+    expect(result.isError).toBe(true);
     expect(result.isLoading).toBe(false);
-    expect(onErrorCalled).toBe(true);
+    expect(result.error).toEqual(error);
+    expect(onError).toHaveBeenCalledWith(error);
   });
 
-  it("calls onSuccess callback when execution is successful", async () => {
-    let onSuccessCalled = false;
-    const options = {
-      onSuccess: (data: number) => {
-        onSuccessCalled = true;
-        expect(data).toBe(10);
-      },
-    };
+  test("times out if the function does not complete in time", async () => {
+    // Function that never resolves within the timeout period
+    const neverResolvingFn = () =>
+      new Promise<string>((resolve) => {
+        setTimeout(() => resolve("Never reached"), 10000);
+      });
+    const onError = vi.fn();
+    const result = await safeExecute(neverResolvingFn, {
+      timeoutMs: 100,
+      onError,
+    });
 
-    const fn = () => 10;
-    const result = await safeExecute(fn, options);
-    expect(result.data).toBe(10);
-    expect(result.isError).toBe(false);
-    expect(result.isSuccess).toBe(true);
+    expect(result.data).toBeNull();
+    expect(result.isSuccess).toBe(false);
+    expect(result.isError).toBe(true);
     expect(result.isLoading).toBe(false);
-    expect(onSuccessCalled).toBe(true);
+    expect(result.error).toBeInstanceOf(Error);
+    expect((result.error as Error).message).toBe("Operation timed out");
+    expect(onError).toHaveBeenCalledWith(result.error);
   });
 });
