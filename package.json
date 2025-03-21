@@ -1,6 +1,6 @@
 {
   "name": "@rahulc0dy/safe-execute",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Safe Execute is a lightweight TypeScript utility designed to simplify error handling when executing functions—whether synchronous or asynchronous.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
