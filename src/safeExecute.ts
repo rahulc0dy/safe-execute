@@ -1,43 +1,50 @@
-// safeExecute.ts
+export interface SafeExecutionOptions<T> {
+  onSuccess?: (result: T) => void;
+  onError?: (error: unknown) => void;
+  timeoutMs?: number; // Timeout in milliseconds
+}
 
-export interface SafeExecutionResult<T> {
+export async function safeExecute<T>(
+  fn: () => Promise<T> | T,
+  options?: SafeExecutionOptions<T> & { timeoutMs?: number }
+): Promise<{
   data: T | null;
   isError: boolean;
   isSuccess: boolean;
   isLoading: boolean;
-}
-
-export interface SafeExecutionOptions<T> {
-  onSuccess?: (result: T) => void;
-  onError?: (error: unknown) => void;
-}
-
-/**
- * Safely executes a function (sync or async) and returns an object with the execution result and state.
- *
- * @param fn - The function to execute safely. It can return a value or a promise.
- * @param options - Optional callbacks for success and error handling.
- * @returns {Promise<SafeExecutionResult<T>>} A promise that resolves with the function's result and state flags.
- */
-export async function safeExecute<T>(
-  fn: () => Promise<T> | T,
-  options?: SafeExecutionOptions<T>
-): Promise<SafeExecutionResult<T>> {
+  error: unknown;
+}> {
   let result: T | null = null;
   let isError = false;
   let isSuccess = false;
   let isLoading = true;
+  let errorObj: unknown = null;
+
+  const promise = Promise.resolve().then(fn);
+
+  const finalPromise = options?.timeoutMs
+    ? Promise.race([
+        promise,
+        new Promise<T>((_, reject) =>
+          setTimeout(
+            () => reject(new Error("Operation timed out")),
+            options.timeoutMs
+          )
+        ),
+      ])
+    : promise;
 
   try {
-    result = await fn();
+    result = await finalPromise;
     isSuccess = true;
     options?.onSuccess?.(result);
   } catch (error) {
     isError = true;
+    errorObj = error;
     options?.onError?.(error);
   } finally {
     isLoading = false;
   }
 
-  return { data: result, isError, isSuccess, isLoading };
+  return { data: result, isError, isSuccess, isLoading, error: errorObj };
 }

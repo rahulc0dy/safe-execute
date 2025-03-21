@@ -1,12 +1,6 @@
-<div align="center">
+<div align="center" style="display: flex; gap: 1rem; justify-content: center;">
   <a href="https://github.com/rahulc0dy/safe-execute/releases">
-    <img src="https://img.shields.io/badge/1.0.0-teal?label=version" alt="Version">
-  </a>
-  <a href="(https://github.com/rahulc0dy/safe-execute/actions/workflows/tests.yml">
-    <img src="https://github.com/rahulc0dy/safe-execute/actions/workflows/tests.yml/badge.svg" alt="Test Status">
-  </a>
-  <a href="https://github.com/rahulc0dy/safe-execute/actions/workflows/builds.yml">
-    <img src="https://github.com/rahulc0dy/safe-execute/actions/workflows/builds.yml/badge.svg" alt="Build Status">
+    <img alt="GitHub package.json version (branch)" src="https://img.shields.io/github/package-json/v/rahulc0dy/safe-execute">
   </a>
   <a href="https://github.com/rahulc0dy/safe-execute/issues">
     <img src="https://img.shields.io/github/issues/rahulc0dy/safe-execute" alt="Issues">
@@ -15,23 +9,35 @@
     <img src="https://img.shields.io/github/stars/rahulc0dy/safe-execute" alt="GitHub Stars">
   </a>
   <a href="https://github.com/rahulc0dy/safe-execute">
-    <img src="https://img.shields.io/coderabbit/prs/github/rahulc0dy/safe-execute?utm_source=oss&utm_medium=github&utm_campaign=rahulc0dy%2Fsafe-execute&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews" alt="GitHub Stars">
+    <img src="https://img.shields.io/coderabbit/prs/github/rahulc0dy/safe-execute?utm_source=oss&utm_medium=github&utm_campaign=rahulc0dy%2Fsafe-execute&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews" alt="CodeRabbit Reviews">
+  </a>
+</div>
+<div align="center" style="display: flex; gap: 1rem; justify-content: center;">
+  <a href="https://github.com/rahulc0dy/safe-execute/actions/workflows/tests.yml">
+    <img src="https://github.com/rahulc0dy/safe-execute/actions/workflows/tests.yml/badge.svg" alt="Test Status">
+  </a>
+  <a href="https://github.com/rahulc0dy/safe-execute/actions/workflows/builds.yml">
+    <img src="https://github.com/rahulc0dy/safe-execute/actions/workflows/builds.yml/badge.svg" alt="Build Status">
   </a>
 </div>
 
 # Safe Execute
 
-Safe Execute is a lightweight TypeScript utility for safely executing functions—whether synchronous or asynchronous—with built-in error handling and state management.
+Safe Execute is a lightweight TypeScript utility for safely executing functions—whether synchronous or asynchronous—with built-in error handling and state management. The package provides two primary functions:
+
+- **tryCatch**: Wraps a promise in a try/catch block and returns a discriminated union indicating either a successful result or an error.
+- **safeExecute**: Safely executes a function (sync or async), optionally with a timeout, and returns an object with execution state flags and any caught error.
 
 ## Features
 
-- **Supports Async & Sync Functions:** Works with functions that return a value or a promise.
-- **Custom Callbacks:** Define `onSuccess` and `onError` handlers to react to execution outcomes.
-- **Unified State Object:** Returns an object containing:
-  - `data`: The result of the function (or `null` if an error occurred).
-  - `isError`: Boolean flag indicating if an error occurred.
-  - `isSuccess`: Boolean flag indicating successful execution.
-  - `isLoading`: Boolean flag indicating whether the function is still processing.
+- **Discriminated Union Result (tryCatch):**  
+  Easily distinguish between successful and failed promise executions with a clear union type.
+
+- **Safe Execution (safeExecute):**  
+  Execute functions with built-in error handling, customizable callbacks, and optional timeout support.
+
+- **Unified State Management:**  
+  Retrieve execution status via `isLoading`, `isSuccess`, `isError`, and access the resulting `data` or `error`.
 
 ## Installation
 
@@ -43,44 +49,105 @@ npm install safe-execute
 
 ## Usage
 
-Below is an example of using Safe Execute with an asynchronous function:
+### tryCatch
+
+Use `tryCatch` to wrap any promise and handle errors gracefully without throwing:
+
+```typescript
+import { tryCatch } from "safe-execute";
+
+async function fetchData() {
+  return fetch("https://api.example.com/data").then((res) => res.json());
+}
+
+async function main() {
+  const result = await tryCatch(fetchData());
+  if (result.error) {
+    console.error("Error fetching data:", result.error);
+  } else {
+    console.log("Data fetched successfully:", result.data);
+  }
+}
+
+main();
+```
+
+### safeExecute
+
+Use `safeExecute` to safely execute any function (sync or async) with support for callbacks and an optional timeout:
 
 ```typescript
 import { safeExecute } from "safe-execute";
 
-const fetchData = async (): Promise<string> => {
-  // Simulate an async operation (e.g., a network request)
-  return await new Promise<string>((resolve) =>
-    setTimeout(() => resolve("Hello, world!"), 1000)
+async function processData() {
+  // Simulate an asynchronous operation
+  return new Promise<string>((resolve) =>
+    setTimeout(() => resolve("Processed data"), 1000)
   );
-};
-
-async function runExample() {
-  const result = await safeExecute(fetchData, {
-    onSuccess: (data) => console.log("Data received:", data),
-    onError: (error) => console.error("Error encountered:", error),
-  });
-
-  console.log(result);
 }
 
-runExample();
+async function runProcess() {
+  const result = await safeExecute(processData, {
+    timeoutMs: 2000,
+    onSuccess: (data) => console.log("Operation succeeded:", data),
+    onError: (error) => console.error("Operation failed:", error),
+  });
+
+  console.log("Final result:", result);
+}
+
+runProcess();
 ```
 
 ## API
 
-### `safeExecute<T>(fn: () => Promise<T> | T, options?: SafeExecutionOptions<T>): Promise<SafeExecutionResult<T>>`
+### tryCatch
+
+**Signature:**
+
+```typescript
+async function tryCatch<T, E = Error>(
+  promise: Promise<T>
+): Promise<Result<T, E>>;
+```
+
+- **Parameters:**
+  - `promise`: A promise that resolves to a value of type `T`.
+- **Returns:**
+  - A discriminated union `Result<T, E>`:
+    - On success: `{ data: T; error: null }`
+    - On failure: `{ data: null; error: E }`
+
+### safeExecute
+
+**Signature:**
+
+```typescript
+async function safeExecute<T>(
+  fn: () => Promise<T> | T,
+  options?: SafeExecutionOptions<T> & { timeoutMs?: number }
+): Promise<{
+  data: T | null;
+  isError: boolean;
+  isSuccess: boolean;
+  isLoading: boolean;
+  error: unknown;
+}>;
+```
 
 - **Parameters:**
   - `fn`: The function to execute (can be synchronous or asynchronous).
-  - `options` (optional):
-    - `onSuccess(result: T)`: Callback executed if `fn` completes successfully.
-    - `onError(error: unknown)`: Callback executed if `fn` throws an error.
-- **Returns:** A promise that resolves to an object with:
-  - `data`: The function’s return value or `null` if an error occurred.
-  - `isError`: `true` if an error occurred, otherwise `false`.
-  - `isSuccess`: `true` if the function executed successfully, otherwise `false`.
-  - `isLoading`: `false` after the function execution completes.
+  - `options` (optional): An object that may include:
+    - `onSuccess(result: T)`: Callback executed if the function succeeds.
+    - `onError(error: unknown)`: Callback executed if the function throws an error.
+    - `timeoutMs`: An optional timeout (in milliseconds) after which the operation is aborted.
+- **Returns:**
+  - An object with the following properties:
+    - `data`: The function’s return value, or `null` if an error occurred.
+    - `isError`: `true` if an error occurred; otherwise `false`.
+    - `isSuccess`: `true` if the function executed successfully; otherwise `false`.
+    - `isLoading`: `false` once the function execution completes.
+    - `error`: The error object if an error occurred; otherwise `null`.
 
 ## Contributing
 
@@ -92,4 +159,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Code of Conduct
 
-This project adheres to a [Code of Conduct](CODE_OF_CONDUCT.md). Please read it before participating.
+This project adheres to a [Code of Conduct](CODE_OF_CONDUCT.md). Please read it before contributing.
