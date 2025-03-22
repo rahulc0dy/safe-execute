@@ -2,7 +2,8 @@
   "compilerOptions": {
     "outDir": "./dist",
     "target": "ES2024",
-    "module": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
     "declaration": true,
     "strict": true,
     "esModuleInterop": true
