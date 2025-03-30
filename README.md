@@ -41,13 +41,13 @@ Safe Execute is a versatile utility library that simplifies the execution of asy
 
 You can add Safe Execute to your project using npm or pnpm:
 
-- Using npm:
+- Using `npm`:
 
   ```bash
   npm install @rahulc0dy/safe-execute
   ```
 
-- Using pnpm
+- Using `pnpm`:
 
   ```bash
   pnpm add @rahulc0dy/safe-execute
@@ -57,21 +57,21 @@ You can add Safe Execute to your project using npm or pnpm:
 
 ### Core Functions
 
-- tryCatch  
+- **tryCatch**  
   Execute a promise safely and get either the data or error without try/catch blocks.
 
-- safeExecute  
+- **safeExecute**  
   Run synchronous or asynchronous functions with built-in error handling and optional callbacks.
 
 ### Additional Utility Functions
 
-- throttle  
+- **throttle**  
   Rate-limit a function so it executes at most once per defined interval.
 
-- debounce  
+- **debounce**  
   Delay function execution until a period of inactivity, ideal for inputs and filtering.
 
-- cache  
+- **cache**  
   Cache the result of asynchronous calls to prevent redundant execution.
 
 For detailed usage examples and API descriptions, refer to the sections below or check the documentation within your IDE.
