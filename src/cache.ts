@@ -23,7 +23,23 @@ export function cache<T extends (...args: any[]) => any>(
   const { ttl, maxSize = 1000 } = options;
 
   return function cached(this: unknown, ...args: Parameters<T>): ReturnType<T> {
-    const key = JSON.stringify(args);
+    // Create a more robust key generation approach
+    const key = args
+      .map((arg) => {
+        if (arg === null) return "null";
+        if (arg === undefined) return "undefined";
+        if (typeof arg === "function") return arg.toString();
+        if (typeof arg === "object") {
+          try {
+            return JSON.stringify(arg);
+          } catch (e) {
+            // Handle circular references or other JSON serialization errors
+            return Object.prototype.toString.call(arg) + "_" + Date.now();
+          }
+        }
+        return String(arg);
+      })
+      .join("__|__");
     const now = Date.now();
     const entry = cache.get(key);
 
