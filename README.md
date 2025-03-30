@@ -1,22 +1,34 @@
-<div align="center" style="display: flex; gap: 1rem; justify-content: center;">
-  <a href="https://github.com/rahulc0dy/safe-execute/releases">
+<div align="center" style="display: flex; justify-content: center;">
+  <a href="https://www.npmjs.com/package/@rahulc0dy/safe-execute" style="margin-right: 8px; margin-bottom: 5px;">
+    <img alt="GitHub package.json version (branch)" src="https://badgen.net/npm/dt/@rahulc0dy/safe-execute">
+  </a>
+  <a href="https://github.com/rahulc0dy/safe-execute/releases" style="margin-right: 8px; margin-bottom: 5px;">
     <img alt="GitHub package.json version (branch)" src="https://img.shields.io/github/package-json/v/rahulc0dy/safe-execute">
   </a>
-  <a href="https://github.com/rahulc0dy/safe-execute/issues">
+  <a href="https://www.npmjs.com/package/@rahulc0dy/safe-execute" style="margin-right: 8px; margin-bottom: 5px;">
+    <img alt="GitHub package.json version (branch)" src="https://badgen.net/npm/node/@rahulc0dy/safe-execute">
+  </a>
+  <a href="https://www.npmjs.com/package/@rahulc0dy/safe-execute" style="margin-right: 8px; margin-bottom: 5px;">
+    <img alt="GitHub package.json version (branch)" src="https://badgen.net/github/license/rahulc0dy/safe-execute">
+  </a>
+  <a href="https://www.npmjs.com/package/@rahulc0dy/safe-execute" style="margin-right: 8px; margin-bottom: 5px;">
+    <img alt="GitHub package.json version (branch)" src="https://badgen.net/github/releases/rahulc0dy/safe-execute">
+  </a>
+  <br>
+  <a href="https://github.com/rahulc0dy/safe-execute/issues" style="margin-right: 8px; margin-bottom: 5px;">
     <img src="https://img.shields.io/github/issues/rahulc0dy/safe-execute" alt="Issues">
   </a>
-  <a href="https://github.com/rahulc0dy/safe-execute">
+  <a href="https://github.com/rahulc0dy/safe-execute" style="margin-right: 8px; margin-bottom: 5px;">
     <img src="https://img.shields.io/github/stars/rahulc0dy/safe-execute" alt="GitHub Stars">
   </a>
-  <a href="https://github.com/rahulc0dy/safe-execute">
+  <a href="https://github.com/rahulc0dy/safe-execute" style="margin-right: 8px; margin-bottom: 5px;">
     <img src="https://img.shields.io/coderabbit/prs/github/rahulc0dy/safe-execute?utm_source=oss&utm_medium=github&utm_campaign=rahulc0dy%2Fsafe-execute&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews" alt="CodeRabbit Reviews">
   </a>
-</div>
-<div align="center" style="display: flex; gap: 1rem; justify-content: center;">
-  <a href="https://github.com/rahulc0dy/safe-execute/actions/workflows/tests.yml">
+  <br>
+  <a href="https://github.com/rahulc0dy/safe-execute/actions/workflows/tests.yml" style="margin-right: 8px; margin-bottom: 5px;">
     <img src="https://github.com/rahulc0dy/safe-execute/actions/workflows/tests.yml/badge.svg" alt="Test Status">
   </a>
-  <a href="https://github.com/rahulc0dy/safe-execute/actions/workflows/builds.yml">
+  <a href="https://github.com/rahulc0dy/safe-execute/actions/workflows/builds.yml" style="margin-right: 8px; margin-bottom: 5px;">
     <img src="https://github.com/rahulc0dy/safe-execute/actions/workflows/builds.yml/badge.svg" alt="Build Status">
   </a>
 </div>
@@ -29,13 +41,13 @@ Safe Execute is a versatile utility library that simplifies the execution of asy
 
 You can add Safe Execute to your project using npm or pnpm:
 
-- Using npm:
+- Using `npm`:
 
   ```bash
   npm install @rahulc0dy/safe-execute
   ```
 
-- Using pnpm
+- Using `pnpm`:
 
   ```bash
   pnpm add @rahulc0dy/safe-execute
@@ -45,21 +57,21 @@ You can add Safe Execute to your project using npm or pnpm:
 
 ### Core Functions
 
-- tryCatch  
+- **tryCatch**  
   Execute a promise safely and get either the data or error without try/catch blocks.
 
-- safeExecute  
+- **safeExecute**  
   Run synchronous or asynchronous functions with built-in error handling and optional callbacks.
 
 ### Additional Utility Functions
 
-- throttle  
+- **throttle**  
   Rate-limit a function so it executes at most once per defined interval.
 
-- debounce  
+- **debounce**  
   Delay function execution until a period of inactivity, ideal for inputs and filtering.
 
-- cache  
+- **cache**  
   Cache the result of asynchronous calls to prevent redundant execution.
 
 For detailed usage examples and API descriptions, refer to the sections below or check the documentation within your IDE.
