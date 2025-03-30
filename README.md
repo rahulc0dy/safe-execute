@@ -23,83 +23,48 @@
 
 # Safe Execute
 
-Safe Execute is a lightweight TypeScript utility for safely executing functions—whether synchronous or asynchronous—with built-in error handling and state management. The package provides two primary functions:
-
-- **tryCatch**: Wraps a promise in a try/catch block and returns a discriminated union indicating either a successful result or an error.
-- **safeExecute**: Safely executes a function (sync or async), optionally with a timeout, and returns an object with execution state flags and any caught error.
-
-## Features
-
-- **Discriminated Union Result (tryCatch):**  
-  Easily distinguish between successful and failed promise executions with a clear union type.
-
-- **Safe Execution (safeExecute):**  
-  Execute functions with built-in error handling, customizable callbacks, and optional timeout support.
-
-- **Unified State Management:**  
-  Retrieve execution status via `isLoading`, `isSuccess`, `isError`, and access the resulting `data` or `error`.
+Safe Execute is a versatile utility library that simplifies the execution of asynchronous tasks while handling errors gracefully. It not only provides core functions like tryCatch and safeExecute, but also includes three additional utilities—throttle, debounce, and cache—to improve performance and control.
 
 ## Installation
 
-Install the package via npm:
+You can add Safe Execute to your project using npm or pnpm:
 
-```bash
-npm install safe-execute
-```
+- Using npm:
+
+  ```bash
+  npm install @rahulc0dy/safe-execute
+  ```
+
+- Using pnpm
+
+  ```bash
+  pnpm add @rahulc0dy/safe-execute
+  ```
 
 ## Usage
 
-### tryCatch
+### Core Functions
 
-Use `tryCatch` to wrap any promise and handle errors gracefully without throwing:
+- tryCatch  
+  Execute a promise safely and get either the data or error without try/catch blocks.
 
-```typescript
-import { tryCatch } from "safe-execute";
+- safeExecute  
+  Run synchronous or asynchronous functions with built-in error handling and optional callbacks.
 
-async function fetchData() {
-  return fetch("https://api.example.com/data").then((res) => res.json());
-}
+### Additional Utility Functions
 
-async function main() {
-  const result = await tryCatch(fetchData());
-  if (result.error) {
-    console.error("Error fetching data:", result.error);
-  } else {
-    console.log("Data fetched successfully:", result.data);
-  }
-}
+- throttle  
+  Rate-limit a function so it executes at most once per defined interval.
 
-main();
-```
+- debounce  
+  Delay function execution until a period of inactivity, ideal for inputs and filtering.
 
-### safeExecute
+- cache  
+  Cache the result of asynchronous calls to prevent redundant execution.
 
-Use `safeExecute` to safely execute any function (sync or async) with support for callbacks and an optional timeout:
+For detailed usage examples and API descriptions, refer to the sections below or check the documentation within your IDE.
 
-```typescript
-import { safeExecute } from "safe-execute";
-
-async function processData() {
-  // Simulate an asynchronous operation
-  return new Promise<string>((resolve) =>
-    setTimeout(() => resolve("Processed data"), 1000)
-  );
-}
-
-async function runProcess() {
-  const result = await safeExecute(processData, {
-    timeoutMs: 2000,
-    onSuccess: (data) => console.log("Operation succeeded:", data),
-    onError: (error) => console.error("Operation failed:", error),
-  });
-
-  console.log("Final result:", result);
-}
-
-runProcess();
-```
-
-## API
+## API Overview
 
 ### tryCatch
 
@@ -108,15 +73,11 @@ runProcess();
 ```typescript
 async function tryCatch<T, E = Error>(
   promise: Promise<T>
-): Promise<Result<T, E>>;
+): Promise<{ data: T | null; error: E | null }>;
 ```
 
-- **Parameters:**
-  - `promise`: A promise that resolves to a value of type `T`.
-- **Returns:**
-  - A discriminated union `Result<T, E>`:
-    - On success: `{ data: T; error: null }`
-    - On failure: `{ data: null; error: E }`
+- On success: `{ data: T, error: null }`
+- On failure: `{ data: null, error: E }`
 
 ### safeExecute
 
@@ -125,7 +86,11 @@ async function tryCatch<T, E = Error>(
 ```typescript
 async function safeExecute<T>(
   fn: () => Promise<T> | T,
-  options?: SafeExecutionOptions<T> & { timeoutMs?: number }
+  options?: {
+    onSuccess?: (result: T) => void;
+    onError?: (error: unknown) => void;
+    timeoutMs?: number;
+  }
 ): Promise<{
   data: T | null;
   isError: boolean;
@@ -135,28 +100,46 @@ async function safeExecute<T>(
 }>;
 ```
 
-- **Parameters:**
-  - `fn`: The function to execute (can be synchronous or asynchronous).
-  - `options` (optional): An object that may include:
-    - `onSuccess(result: T)`: Callback executed if the function succeeds.
-    - `onError(error: unknown)`: Callback executed if the function throws an error.
-    - `timeoutMs`: An optional timeout (in milliseconds) after which the operation is aborted.
-- **Returns:**
-  - An object with the following properties:
-    - `data`: The function’s return value, or `null` if an error occurred.
-    - `isError`: `true` if an error occurred; otherwise `false`.
-    - `isSuccess`: `true` if the function executed successfully; otherwise `false`.
-    - `isLoading`: `false` once the function execution completes.
-    - `error`: The error object if an error occurred; otherwise `null`.
+Executes a given function safely, handling both synchronous and asynchronous operations, with optional callbacks and a timeout.
+
+### throttle
+
+**Signature:**
+
+```typescript
+function throttle<T extends (...args: any[]) => any>(fn: T, wait: number): T;
+```
+
+Returns a throttled version of the function that only executes once within the specified wait time.
+
+### debounce
+
+**Signature:**
+
+```typescript
+function debounce<T extends (...args: any[]) => any>(fn: T, delay: number): T;
+```
+
+Returns a debounced version of the function that delays execution until after the delay period has passed without further invocation.
+
+### cache
+
+**Signature:**
+
+```typescript
+function cache<T extends (...args: any[]) => Promise<any>>(fn: T): T;
+```
+
+Caches the result of asynchronous function calls to avoid redundant executions when called with the same arguments.
 
 ## Contributing
 
-Contributions are welcome! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to help out.
+Contributions are welcome! Please refer to our [contributing guidelines](CONTRIBUTING.md) for details on how to help improve the project.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the [MIT License](LICENSE).
 
-## Code of Conduct
+## Support
 
-This project adheres to a [Code of Conduct](CODE_OF_CONDUCT.md). Please read it before contributing.
+If you encounter any issues or have questions, please open an [issue](https://github.com/rahulc0dy/safe-execute/issues) for assistance.
